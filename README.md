@@ -26,8 +26,6 @@ _Go to **[Trillo Shop Client](https://github.com/krzysztoftalar/trillo-shop-clie
 | [MediatR](https://github.com/jbogard/MediatR/wiki) |
 | [Swagger](https://swagger.io/)
 
-</br>
-
 ## Getting Started
 
 ### Prerequisites
