@@ -543,7 +543,7 @@ namespace Persistence.Data
                 {
                     Quantity = 100,
                     Price = 420,
-                    ProductSize = "42",
+                    ProductSize = "43",
                     ProductColor = "#eaa69a",
                     ProductId = 3,
                 },
@@ -551,7 +551,7 @@ namespace Persistence.Data
                 {
                     Quantity = 100,
                     Price = 420,
-                    ProductSize = "42",
+                    ProductSize = "44",
                     ProductColor = "#eaa69a",
                     ProductId = 3,
                 },
@@ -559,7 +559,7 @@ namespace Persistence.Data
                 {
                     Quantity = 100,
                     Price = 420,
-                    ProductSize = "42",
+                    ProductSize = "45",
                     ProductColor = "#eaa69a",
                     ProductId = 3,
                 },

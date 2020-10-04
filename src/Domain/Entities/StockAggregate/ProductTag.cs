@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Domain.Entities.StockAggregate
+﻿namespace Domain.Entities.StockAggregate
 {
     public class ProductTag
     {

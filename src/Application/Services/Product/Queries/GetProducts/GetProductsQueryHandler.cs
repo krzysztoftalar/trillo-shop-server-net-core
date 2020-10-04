@@ -70,20 +70,7 @@ namespace Application.Services.Product.Queries.GetProducts
             }
 
             var products = queryable
-                .Select(x => new ProductDto
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Price = x.Stocks.Select(y => y.Price).FirstOrDefault(),
-                    Category = x.Category.Name,
-                    Photos = x.Photos.Select(y =>
-                        new PhotoDto
-                        {
-                            Id = y.Id,
-                            Url = y.Url,
-                            IsMain = y.IsMain
-                        })
-                });
+                .Select(ProductDto.ProductsProjection);
 
             return new ProductsEnvelope
             {
