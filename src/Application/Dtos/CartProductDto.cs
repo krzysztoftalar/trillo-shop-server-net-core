@@ -8,6 +8,8 @@ namespace Application.Dtos
     {
         public int StockId { get; set; }
         public string ProductName { get; set; }
+        public string ProductSize { get; set; }
+        public string ProductColor { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public string PhotoUrl { get; set; }
@@ -17,6 +19,8 @@ namespace Application.Dtos
             {
                 StockId = cart.StockId,
                 ProductName = cart.ProductName,
+                ProductSize = cart.ProductSize,
+                ProductColor = cart.ProductColor,
                 Price = cart.Price,
                 Quantity = cart.Quantity,
                 PhotoUrl = cart.PhotoUrl,

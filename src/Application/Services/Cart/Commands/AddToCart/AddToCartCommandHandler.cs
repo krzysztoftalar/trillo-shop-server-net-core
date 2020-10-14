@@ -53,16 +53,18 @@ namespace Application.Services.Cart.Commands.AddToCart
                     SessionId = _sessionService.GetId(),
                     StockId = request.StockId,
                     Quantity = request.Quantity,
-                    ExpiryDate = DateTime.Now.AddMinutes(2)
+                    ExpiryDate = DateTime.Now.AddMinutes(60)
                 }, cancellationToken);
             }
 
-            stocksOnHold.ForEach(x => x.ExpiryDate = DateTime.Now.AddMinutes(2));
+            stocksOnHold.ForEach(x => x.ExpiryDate = DateTime.Now.AddMinutes(60));
 
             var cartProduct = new CartProduct
             {
                 StockId = stock.Id,
                 ProductName = stock.Product.Name,
+                ProductSize = stock.ProductSize,
+                ProductColor = stock.ProductColor,
                 Price = stock.Price,
                 Quantity = request.Quantity,
                 PhotoUrl = stock.Product.Photos.First(x => x.IsMain).Url

@@ -5,7 +5,7 @@ using Application.Dtos;
 using Application.Interfaces;
 using MediatR;
 
-namespace Application.Services.Cart.Commands.Queries.GetCart
+namespace Application.Services.Cart.Queries.GetCart
 {
     public class GetCartQueryHandler : IRequestHandler<GetCartQuery, CartProductsEnvelope>
     {

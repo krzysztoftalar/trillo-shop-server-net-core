@@ -47,7 +47,7 @@ namespace WebUI
             services.AddSession(options =>
             {
                 options.Cookie.Name = "Cart";
-                options.Cookie.MaxAge = TimeSpan.FromMinutes(2);
+                options.Cookie.MaxAge = TimeSpan.FromMinutes(60);
             });
 
             services.AddScoped<ISessionService, SessionService>();

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Application.Dtos;
 
-namespace Application.Services.Cart.Commands.Queries.GetCart
+namespace Application.Services.Cart.Queries.GetCart
 {
     public class CartProductsEnvelope
     {

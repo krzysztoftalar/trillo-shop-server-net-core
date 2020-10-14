@@ -48,6 +48,28 @@ namespace WebUI.Infrastructure
             _session.SetString(CartKey, stringObject);
         }
 
+        public void RemoveFromCart(int stockId, int quantity)
+        {
+            var cartList = new List<CartProduct>();
+            var stringObject = _session.GetString(CartKey);
+
+            if (!string.IsNullOrWhiteSpace(stringObject))
+            {
+                cartList = JsonConvert.DeserializeObject<List<CartProduct>>(stringObject);
+            }
+
+            var product = cartList.Find(x => x.StockId == stockId);
+            product.Quantity -= quantity;
+            if (product.Quantity == 0)
+            {
+                cartList.Remove(product);
+            }
+
+            stringObject = JsonConvert.SerializeObject(cartList);
+
+            _session.SetString(CartKey, stringObject);
+        }
+
         public IEnumerable<TResult> GetCart<TResult>(Expression<Func<CartProduct, TResult>> projection)
         {
             var stringObject = _session.GetString(CartKey);

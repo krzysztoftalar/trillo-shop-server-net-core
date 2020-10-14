@@ -9,6 +9,7 @@ namespace Application.Interfaces
     {
         string GetId();
         void AddToCart(CartProduct product);
+        void RemoveFromCart(int stockId, int quantity);
         IEnumerable<TResult> GetCart<TResult>(Expression<Func<CartProduct, TResult>> projection);
     }
 }
