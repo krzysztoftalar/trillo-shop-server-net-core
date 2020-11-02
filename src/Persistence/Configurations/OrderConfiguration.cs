@@ -16,7 +16,16 @@ namespace Persistence.Configurations
                 .IsRequired();
 
             builder.Property(o => o.OrderRef)
-                .IsRequired();
+                .IsRequired()
+                .HasMaxLength(50);
+            
+            builder.Property(o => o.SessionId)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            builder.Property(o => o.CustomerEmail)
+                .IsRequired()
+                .HasMaxLength(100);
 
             builder.Property(o => o.OrderDate)
                 .IsRequired()
@@ -45,6 +54,12 @@ namespace Persistence.Configurations
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(o => o.DeliveryMethodId)
+                .IsRequired();
+            
+            builder.Property(o => o.PaymentMethodId)
+                .IsRequired();
+            
+            builder.Property(o => o.Paid)
                 .IsRequired();
         }
     }

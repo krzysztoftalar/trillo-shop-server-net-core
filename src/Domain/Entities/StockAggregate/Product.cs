@@ -25,6 +25,6 @@ namespace Domain.Entities.StockAggregate
         public virtual ICollection<Stock> Stocks { get; set; }
         public virtual ICollection<ProductTag> ProductTags { get; set; }
         public virtual ICollection<RelatedProduct> RelatedProducts { get; set; }
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
+
     }
 }

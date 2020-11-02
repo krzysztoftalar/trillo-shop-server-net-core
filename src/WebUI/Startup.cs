@@ -1,6 +1,8 @@
 using System;
 using Application;
 using Application.Interfaces;
+using Infrastructure;
+using Infrastructure.Payment;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +13,7 @@ using Persistence;
 using WebUI.Configurations;
 using WebUI.Infrastructure;
 using WebUI.Middleware;
+using AppContext = Application.Interfaces.AppContext;
 
 namespace WebUI
 {
@@ -28,8 +31,10 @@ namespace WebUI
         {
             services.AddPersistence(_config);
             services.AddApplication();
+            services.AddInfrastructure();
 
             services.AddSwaggerDocumentation();
+            services.AddHttpContextAccessor();
 
             services.AddCors(options =>
                 options.AddPolicy(CorsPolicy,
@@ -51,6 +56,8 @@ namespace WebUI
             });
 
             services.AddScoped<ISessionService, SessionService>();
+
+            services.Configure<StripeOptions>(_config.GetSection("Stripe"));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -68,6 +75,7 @@ namespace WebUI
             app.UseSession();
 
             app.UseSwaggerDocumentation();
+            app.UseAppContext();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }

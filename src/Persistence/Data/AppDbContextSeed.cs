@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Entities;
+using Domain.Entities.OrderAggregate;
 using Domain.Entities.StockAggregate;
 using Domain.Enums;
 using Microsoft.AspNetCore.Identity;
@@ -18,8 +19,10 @@ namespace Persistence.Data
                 {
                     await userManager.CreateAsync(user, "Pa$$w0rd");
                 }
+                
+                await context.PaymentMethods.AddRangeAsync(GetPreconfiguredPaymentMethods());
 
-                await context.SaveChangesAsync();
+                await context.DeliveryMethods.AddRangeAsync(GetPreconfiguredDeliveryMethods());
 
                 await context.ProductCategories.AddRangeAsync(GetPreconfiguredCategories());
                 await context.SaveChangesAsync();
@@ -36,6 +39,58 @@ namespace Persistence.Data
                 await context.Reviews.AddRangeAsync(GetPreconfiguredReviews());
                 await context.SaveChangesAsync();
             }
+        }
+
+        private static IEnumerable<PaymentMethod> GetPreconfiguredPaymentMethods()
+        {
+            return new List<PaymentMethod>
+            {
+                new PaymentMethod
+                {
+                    Name = "Direct bank transfer",
+                    Description =
+                        "Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account."
+                },
+                new PaymentMethod
+                {
+                    Name = "Cash on delivery",
+                    Description = "Pay with cash upon delivery."
+                },
+                new PaymentMethod
+                {
+                    Name = "Credit and debit cards",
+                    Description =
+                        "Pay with Visa, Mastercard, American Express, Discover and Diners, China UnionPay, JCB, Cartes Bancaires, Interac."
+                }
+            };
+        }
+
+        private static IEnumerable<DeliveryMethod> GetPreconfiguredDeliveryMethods()
+        {
+            return new List<DeliveryMethod>
+            {
+                new DeliveryMethod
+                {
+                    Name = "Free shipping",
+                    DeliveryTime = "3 Days",
+                    Description = "Free shipping",
+                    Price = 0
+                },
+                new DeliveryMethod
+                {
+                    Name = "Flat rate",
+                    DeliveryTime = "2 Days",
+                    Description = "Flat rate",
+                    Price = 15
+                },
+                new DeliveryMethod
+                {
+                    Name = "Local pickup",
+                    DeliveryTime = "1 Day",
+                    Description = "Local pickup",
+                    Price = 8
+                }
+            };
         }
 
         private static IEnumerable<AppUser> GetPreconfiguredUsers()
@@ -116,10 +171,10 @@ namespace Persistence.Data
         {
             return new List<ProductCategory>
             {
-                new ProductCategory {Name = "Accessories"},
-                new ProductCategory {Name = "Jacket"},
-                new ProductCategory {Name = "Trousers"},
-                new ProductCategory {Name = "Clothes"},
+                new ProductCategory { Name = "Accessories" },
+                new ProductCategory { Name = "Jacket" },
+                new ProductCategory { Name = "Trousers" },
+                new ProductCategory { Name = "Clothes" },
             };
         }
 

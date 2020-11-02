@@ -15,7 +15,7 @@ namespace Persistence.Configurations
 
             builder.Property(d => d.Name)
                 .IsRequired()
-                .HasMaxLength(10);
+                .HasMaxLength(30);
 
             builder.Property(d => d.DeliveryTime)
                 .IsRequired()
@@ -23,7 +23,7 @@ namespace Persistence.Configurations
 
             builder.Property(d => d.Description)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(100);
 
             builder.Property(d => d.Price)
                 .IsRequired()

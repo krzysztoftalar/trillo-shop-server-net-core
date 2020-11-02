@@ -47,7 +47,6 @@ namespace Application.Services.Product.Queries.GetProduct
                 .Include(x => x.ProductTags)
                 .Include(x => x.Reviews)
                 .ThenInclude(x => x.Author)
-                .Include(x => x.OrderItems)
                 .Where(x => x.Id == request.Id)
                 .Select(ProductDto.ProductProjection)
                 .AsNoTracking()

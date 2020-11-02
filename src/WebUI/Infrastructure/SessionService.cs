@@ -23,6 +23,11 @@ namespace WebUI.Infrastructure
         {
             return _session.Id;
         }
+        
+        public void ClearCart()
+        {
+            _session.Remove(CartKey);
+        }
 
         public void AddToCart(CartProduct cartProduct)
         {
@@ -60,6 +65,7 @@ namespace WebUI.Infrastructure
 
             var product = cartList.Find(x => x.StockId == stockId);
             product.Quantity -= quantity;
+            
             if (product.Quantity == 0)
             {
                 cartList.Remove(product);

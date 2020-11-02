@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Domain.Entities.OrderAggregate;
 
 namespace Domain.Entities.StockAggregate
 {
@@ -16,5 +17,6 @@ namespace Domain.Entities.StockAggregate
         public virtual StockOnHold StockOnHold { get; set; }
         public virtual ICollection<StockCostHistory> StockCostHistories { get; set; }
         public virtual ICollection<Wishlist> Wishlists { get; set; }
+        public virtual ICollection<OrderItem> OrderItems { get; set; }
     }
 }

@@ -33,7 +33,7 @@ namespace Application.Services.Cart.Commands.AddToCart
             if (request.Quantity > stock.Quantity)
             {
                 throw new RestException(HttpStatusCode.BadRequest,
-                    new { Stock = $"Not enough quantity in stock: {stock.Id}" });
+                    new { AddToCart = $"Not enough quantity in stock: {stock.Id}" });
             }
 
             stock.Quantity -= request.Quantity;
@@ -52,7 +52,12 @@ namespace Application.Services.Cart.Commands.AddToCart
                 {
                     SessionId = _sessionService.GetId(),
                     StockId = request.StockId,
+                    ProductName = stock.Product.Name,
+                    ProductSize = stock.ProductSize,
+                    ProductColor = stock.ProductColor,
+                    Price = stock.Price,
                     Quantity = request.Quantity,
+                    PhotoUrl = stock.Product.Photos.First(x => x.IsMain).Url,
                     ExpiryDate = DateTime.Now.AddMinutes(60)
                 }, cancellationToken);
             }

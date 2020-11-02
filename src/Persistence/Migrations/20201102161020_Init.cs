@@ -66,15 +66,29 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(maxLength: 10, nullable: false),
+                    Name = table.Column<string>(maxLength: 30, nullable: false),
                     DeliveryTime = table.Column<string>(maxLength: 10, nullable: false),
-                    Description = table.Column<string>(maxLength: 50, nullable: false),
+                    Description = table.Column<string>(maxLength: 100, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DeliveryMethods", x => x.Id);
                     table.CheckConstraint("CK_DeliveryMethod_Price", "[Price] >= 0");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PaymentMethods",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    Description = table.Column<string>(maxLength: 1000, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentMethods", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -250,7 +264,9 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderRef = table.Column<string>(nullable: false),
+                    OrderRef = table.Column<string>(maxLength: 50, nullable: false),
+                    SessionId = table.Column<string>(maxLength: 50, nullable: false),
+                    CustomerEmail = table.Column<string>(maxLength: 100, nullable: false),
                     OrderDate = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
                     ShipDate = table.Column<DateTime>(nullable: true),
                     Status = table.Column<string>(nullable: false, defaultValue: "Pending"),
@@ -259,14 +275,16 @@ namespace Persistence.Migrations
                     ShippingAddress_CompanyName = table.Column<string>(nullable: true),
                     ShippingAddress_Email = table.Column<string>(nullable: true),
                     ShippingAddress_PhoneNumber = table.Column<string>(nullable: true),
-                    ShippingAddress_Street = table.Column<string>(nullable: true),
-                    ShippingAddress_HomeNumber = table.Column<string>(nullable: true),
+                    ShippingAddress_Country = table.Column<string>(nullable: true),
                     ShippingAddress_City = table.Column<string>(nullable: true),
                     ShippingAddress_State = table.Column<string>(nullable: true),
+                    ShippingAddress_Street = table.Column<string>(nullable: true),
+                    ShippingAddress_HomeNumber = table.Column<string>(nullable: true),
                     ShippingAddress_ZipCode = table.Column<string>(nullable: true),
-                    ShippingAddress_Country = table.Column<string>(nullable: true),
                     CustomerId = table.Column<string>(nullable: true),
-                    DeliveryMethodId = table.Column<int>(nullable: false)
+                    DeliveryMethodId = table.Column<int>(nullable: false),
+                    PaymentMethodId = table.Column<int>(nullable: false),
+                    Paid = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -281,6 +299,12 @@ namespace Persistence.Migrations
                         name: "FK_Orders_DeliveryMethods_DeliveryMethodId",
                         column: x => x.DeliveryMethodId,
                         principalTable: "DeliveryMethods",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_PaymentMethods_PaymentMethodId",
+                        column: x => x.PaymentMethodId,
+                        principalTable: "PaymentMethods",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -309,38 +333,6 @@ namespace Persistence.Migrations
                         principalTable: "ProductCategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderItems",
-                columns: table => new
-                {
-                    OrderId = table.Column<int>(nullable: false),
-                    ProductId = table.Column<int>(nullable: false),
-                    ProductName = table.Column<string>(maxLength: 50, nullable: false),
-                    ProductPhotoUrl = table.Column<string>(maxLength: 100, nullable: false),
-                    ProductSize = table.Column<string>(maxLength: 10, nullable: false),
-                    ProductColor = table.Column<string>(maxLength: 10, nullable: false),
-                    Quantity = table.Column<int>(nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderItems", x => x.OrderId);
-                    table.CheckConstraint("CK_OrderItem_Quantity", "[Quantity] >= 0");
-                    table.CheckConstraint("CK_OrderItem_Price", "[Price] >= 0");
-                    table.ForeignKey(
-                        name: "FK_OrderItems_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrderItems_Products_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -468,6 +460,38 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OrderItems",
+                columns: table => new
+                {
+                    OrderId = table.Column<int>(nullable: false),
+                    StockId = table.Column<int>(nullable: false),
+                    ProductName = table.Column<string>(maxLength: 50, nullable: false),
+                    ProductSize = table.Column<string>(maxLength: 10, nullable: true),
+                    ProductColor = table.Column<string>(maxLength: 10, nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Quantity = table.Column<int>(nullable: false),
+                    ProductPhotoUrl = table.Column<string>(maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItems", x => new { x.OrderId, x.StockId });
+                    table.CheckConstraint("CK_OrderItem_Quantity", "[Quantity] >= 0");
+                    table.CheckConstraint("CK_OrderItem_Price", "[Price] >= 0");
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Stocks_StockId",
+                        column: x => x.StockId,
+                        principalTable: "Stocks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "StockCostHistories",
                 columns: table => new
                 {
@@ -496,7 +520,12 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SessionId = table.Column<string>(nullable: false),
+                    ProductName = table.Column<string>(maxLength: 50, nullable: false),
+                    ProductSize = table.Column<string>(maxLength: 10, nullable: true),
+                    ProductColor = table.Column<string>(maxLength: 10, nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Quantity = table.Column<int>(nullable: false),
+                    PhotoUrl = table.Column<string>(maxLength: 100, nullable: false),
                     ExpiryDate = table.Column<DateTime>(nullable: false),
                     StockId = table.Column<int>(nullable: false)
                 },
@@ -504,6 +533,7 @@ namespace Persistence.Migrations
                 {
                     table.PrimaryKey("PK_StocksOnHold", x => x.Id);
                     table.CheckConstraint("CK_StockOnHold_Quantity", "[Quantity] >= 0");
+                    table.CheckConstraint("CK_StockOnHold_Price", "[Price] >= 0");
                     table.ForeignKey(
                         name: "FK_StocksOnHold_Stocks_StockId",
                         column: x => x.StockId,
@@ -587,6 +617,11 @@ namespace Persistence.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_StockId",
+                table: "OrderItems",
+                column: "StockId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
                 table: "Orders",
                 column: "CustomerId");
@@ -595,6 +630,11 @@ namespace Persistence.Migrations
                 name: "IX_Orders_DeliveryMethodId",
                 table: "Orders",
                 column: "DeliveryMethodId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_PaymentMethodId",
+                table: "Orders",
+                column: "PaymentMethodId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Photos_ProductId",
@@ -711,6 +751,9 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "DeliveryMethods");
+
+            migrationBuilder.DropTable(
+                name: "PaymentMethods");
 
             migrationBuilder.DropTable(
                 name: "Products");

@@ -23,10 +23,10 @@ namespace Application.Services.Product.Queries.GetProducts
             var queryable = _context.Products
                 .Include(x => x.Photos)
                 .Include(x => x.Stocks)
+                .ThenInclude(x => x.OrderItems)
                 .Include(x => x.Category)
                 .Include(x => x.ProductTags)
                 .Include(x => x.Reviews)
-                .Include(x => x.OrderItems)
                 .AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(request.Predicate))
@@ -59,7 +59,8 @@ namespace Application.Services.Product.Queries.GetProducts
             {
                 queryable = request.SortBy switch
                 {
-                    "popularity" => queryable.OrderByDescending(x => x.OrderItems.Sum(y => y.ProductId)),
+                    "popularity" => queryable.OrderByDescending(
+                        x => x.Stocks.Sum(y => y.OrderItems.Sum(z => z.StockId))),
                     "rating" => queryable.OrderByDescending(x =>
                         x.Reviews.Count == 0 ? 0 : x.Reviews.Sum(y => y.Rating) / (double) x.Reviews.Count),
                     "latest" => queryable.OrderByDescending(x => x.CreatedAt),

@@ -102,13 +102,13 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(10)")
-                        .HasMaxLength(10);
+                        .HasColumnType("nvarchar(30)")
+                        .HasMaxLength(30);
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -127,6 +127,11 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("CustomerEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
                     b.Property<string>("CustomerId")
                         .HasColumnType("nvarchar(450)");
 
@@ -140,7 +145,19 @@ namespace Persistence.Migrations
 
                     b.Property<string>("OrderRef")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<bool>("Paid")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PaymentMethodId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SessionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<DateTime?>("ShipDate")
                         .HasColumnType("datetime2");
@@ -157,6 +174,8 @@ namespace Persistence.Migrations
 
                     b.HasIndex("DeliveryMethodId");
 
+                    b.HasIndex("PaymentMethodId");
+
                     b.ToTable("Orders");
                 });
 
@@ -165,16 +184,15 @@ namespace Persistence.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
+                    b.Property<int>("StockId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ProductColor")
-                        .IsRequired()
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
@@ -187,20 +205,43 @@ namespace Persistence.Migrations
                         .HasMaxLength(100);
 
                     b.Property<string>("ProductSize")
-                        .IsRequired()
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderId");
+                    b.HasKey("OrderId", "StockId");
+
+                    b.HasIndex("StockId");
 
                     b.ToTable("OrderItems");
 
                     b.HasCheckConstraint("CK_OrderItem_Quantity", "[Quantity] >= 0");
 
                     b.HasCheckConstraint("CK_OrderItem_Price", "[Price] >= 0");
+                });
+
+            modelBuilder.Entity("Domain.Entities.OrderAggregate.PaymentMethod", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1000)")
+                        .HasMaxLength(1000);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentMethods");
                 });
 
             modelBuilder.Entity("Domain.Entities.StockAggregate.Address", b =>
@@ -529,6 +570,27 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("PhotoUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ProductColor")
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("ProductSize")
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -546,6 +608,8 @@ namespace Persistence.Migrations
                     b.ToTable("StocksOnHold");
 
                     b.HasCheckConstraint("CK_StockOnHold_Quantity", "[Quantity] >= 0");
+
+                    b.HasCheckConstraint("CK_StockOnHold_Price", "[Price] >= 0");
                 });
 
             modelBuilder.Entity("Domain.Entities.StockAggregate.Tag", b =>
@@ -722,7 +786,13 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Domain.Entities.OrderAggregate.OrderAddress", "ShippingAddress", b1 =>
+                    b.HasOne("Domain.Entities.OrderAggregate.PaymentMethod", "PaymentMethod")
+                        .WithMany()
+                        .HasForeignKey("PaymentMethodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("Domain.Entities.OrderAggregate.Address", "ShippingAddress", b1 =>
                         {
                             b1.Property<int>("OrderId")
                                 .ValueGeneratedOnAdd()
@@ -779,9 +849,9 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.StockAggregate.Product", "Product")
+                    b.HasOne("Domain.Entities.StockAggregate.Stock", "Stock")
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("StockId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

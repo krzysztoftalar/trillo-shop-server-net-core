@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domain.Entities.OrderAggregate;
 using Domain.Entities.StockAggregate;
 using Microsoft.EntityFrameworkCore;
+using Address = Domain.Entities.StockAggregate.Address;
 
 namespace Application.Interfaces
 {
@@ -14,6 +15,7 @@ namespace Application.Interfaces
         DbSet<Order> Orders { get; set; }
         DbSet<OrderItem> OrderItems { get; set; }
         DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+        DbSet<PaymentMethod> PaymentMethods { get; set; }
         DbSet<Address> Addresses { get; set; }
         DbSet<AddressType> AddressesTypes { get; set; }
         

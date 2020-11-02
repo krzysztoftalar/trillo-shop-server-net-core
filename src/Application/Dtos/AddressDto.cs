@@ -1,6 +1,6 @@
-﻿namespace Domain.Entities.OrderAggregate
+﻿namespace Application.Dtos
 {
-    public class Address
+    public class AddressDto
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

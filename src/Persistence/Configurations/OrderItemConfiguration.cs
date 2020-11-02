@@ -8,29 +8,29 @@ namespace Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
-            builder.HasKey(o => o.OrderId);
+            builder.HasKey(o => new { o.OrderId, o.StockId });
 
             builder.Property(o => o.OrderId)
                 .IsRequired();
 
-            builder.Property(o => o.ProductId)
+            builder.Property(o => o.StockId)
                 .IsRequired();
 
             builder.Property(o => o.ProductName)
                 .IsRequired()
                 .HasMaxLength(50);
 
-            builder.Property(o => o.ProductPhotoUrl)
-                .IsRequired()
-                .HasMaxLength(100);
-
             builder.Property(o => o.ProductSize)
-                .IsRequired()
+                .IsRequired(false)
                 .HasMaxLength(10);
 
             builder.Property(o => o.ProductColor)
-                .IsRequired()
+                .IsRequired(false)
                 .HasMaxLength(10);
+
+            builder.Property(o => o.ProductPhotoUrl)
+                .IsRequired()
+                .HasMaxLength(100);
 
             builder.Property(o => o.Quantity)
                 .IsRequired();
@@ -48,9 +48,9 @@ namespace Persistence.Configurations
                 .HasForeignKey(oi => oi.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(oi => oi.Product)
-                .WithMany(p => p.OrderItems)
-                .HasForeignKey(oi => oi.OrderId)
+            builder.HasOne(oi => oi.Stock)
+                .WithMany(s => s.OrderItems)
+                .HasForeignKey(oi => oi.StockId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
