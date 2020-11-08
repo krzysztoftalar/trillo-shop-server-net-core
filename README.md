@@ -14,7 +14,13 @@ _This is the server-side of the Trillo Shop application. The project is under co
 
 _Go to **[Trillo Shop Client](https://github.com/krzysztoftalar/trillo-shop-client-react-redux)**._
 
+_Go to **[Trillo Shop UML diagrams](https://github.com/krzysztoftalar/trillo-shop-server-net-core/blob/master/trillo_uml.pdf)**._
+
 ## Features
+
+- Shopping cart management
+- Creating an order
+- Payment with Stripe
 
 ## Built With
 
@@ -25,6 +31,7 @@ _Go to **[Trillo Shop Client](https://github.com/krzysztoftalar/trillo-shop-clie
 | [Entity Framework](https://docs.microsoft.com/en-us/ef/) |
 | [MediatR](https://github.com/jbogard/MediatR/wiki) |
 | [Swagger](https://swagger.io/)
+| [Stripe](https://stripe.com/en-pl)
 
 ## Getting Started
 
