@@ -1,19 +1,19 @@
-using System;
 using Application;
 using Application.Interfaces;
 using Infrastructure;
 using Infrastructure.Payment;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Persistence;
+using Stripe;
+using System;
 using WebUI.Configurations;
 using WebUI.Infrastructure;
 using WebUI.Middleware;
-using AppContext = Application.Interfaces.AppContext;
 
 namespace WebUI
 {
@@ -53,11 +53,22 @@ namespace WebUI
             {
                 options.Cookie.Name = "Cart";
                 options.Cookie.MaxAge = TimeSpan.FromMinutes(60);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.IsEssential = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
             services.AddScoped<ISessionService, SessionService>();
 
             services.Configure<StripeOptions>(_config.GetSection("Stripe"));
+            StripeConfiguration.ApiKey = _config.GetSection("Stripe")["SecretKey"];
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -72,6 +83,7 @@ namespace WebUI
             app.UseRouting();
             app.UseCors(CorsPolicy);
 
+            app.UseCookiePolicy();
             app.UseSession();
 
             app.UseSwaggerDocumentation();

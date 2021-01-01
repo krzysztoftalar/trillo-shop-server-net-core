@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Application.Dtos;
+﻿using Application.Dtos;
 using Application.Interfaces;
 using Domain.Entities.OrderAggregate;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Stripe;
 using Stripe.Checkout;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Payment
 {
@@ -18,7 +17,6 @@ namespace Infrastructure.Payment
         public StripePaymentService(IOptions<StripeOptions> options)
         {
             _options = options;
-            StripeConfiguration.ApiKey = _options.Value.SecretKey;
         }
 
         public async Task<string> CreateCheckoutSession(IEnumerable<CartProductDto> cart, DeliveryMethod deliveryMethod,
