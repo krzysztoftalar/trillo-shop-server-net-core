@@ -12,7 +12,7 @@ using Persistence;
 using Stripe;
 using System;
 using WebUI.Configurations;
-using WebUI.Infrastructure;
+using FluentValidation.AspNetCore;
 using WebUI.Middleware;
 
 namespace WebUI
@@ -32,6 +32,9 @@ namespace WebUI
             services.AddPersistence(_config);
             services.AddApplication();
             services.AddInfrastructure();
+            
+            services.AddControllers()
+                .AddFluentValidation(options => { options.RegisterValidatorsFromAssemblyContaining<IAppDbContext>(); });;
 
             services.AddSwaggerDocumentation();
             services.AddHttpContextAccessor();
@@ -65,8 +68,8 @@ namespace WebUI
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddScoped<ISessionService, SessionService>();
-
+            services.AddJwtIdentity(_config.GetSection("JwtConfiguration"));
+            
             services.Configure<StripeOptions>(_config.GetSection("Stripe"));
             StripeConfiguration.ApiKey = _config.GetSection("Stripe")["SecretKey"];
         }
@@ -82,9 +85,12 @@ namespace WebUI
 
             app.UseRouting();
             app.UseCors(CorsPolicy);
-
+            
             app.UseCookiePolicy();
             app.UseSession();
+            
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseSwaggerDocumentation();
             app.UseAppContext();

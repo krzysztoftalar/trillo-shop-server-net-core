@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Application.Infrastructure;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +12,9 @@ namespace Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
+            services.AddScoped<ISessionService, SessionService>();
+            services.AddScoped<ICookieService, CookieService>();
+
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
             return services;

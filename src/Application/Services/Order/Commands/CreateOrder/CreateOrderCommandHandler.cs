@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +12,7 @@ using Domain.Entities.StockAggregate;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Address = Domain.Entities.OrderAggregate.Address;
-using AppContext = Application.Interfaces.AppContext;
+using AppContext = Application.Infrastructure.AppContext;
 
 namespace Application.Services.Order.Commands.CreateOrder
 {

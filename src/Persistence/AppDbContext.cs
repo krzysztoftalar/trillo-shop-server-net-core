@@ -35,6 +35,8 @@ namespace Persistence
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<StockCostHistory> StockCostHistories { get; set; }
         public DbSet<StockOnHold> StocksOnHold { get; set; }
+        
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public async Task<int> SaveChangesAsync()
         {

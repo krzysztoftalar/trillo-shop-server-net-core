@@ -13,5 +13,6 @@ namespace Domain.Entities
         public virtual ICollection<Wishlist> Wishlists { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
     }
 }

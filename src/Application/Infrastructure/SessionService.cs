@@ -7,7 +7,7 @@ using Domain.Entities.BuyerAggregate;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace WebUI.Infrastructure
+namespace Application.Infrastructure
 {
     public class SessionService : ISessionService
     {

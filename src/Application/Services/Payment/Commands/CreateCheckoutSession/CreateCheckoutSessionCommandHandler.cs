@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Dtos;
 using Application.Errors;
+using Application.Infrastructure;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;

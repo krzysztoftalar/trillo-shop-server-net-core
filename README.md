@@ -14,13 +14,14 @@ _This is the server-side of the Trillo Shop application. The project is under co
 
 _Go to **[Trillo Shop Client](https://github.com/krzysztoftalar/trillo-shop-client-react-redux)**._
 
-_Go to **[Trillo Shop UML diagrams](https://github.com/krzysztoftalar/trillo-shop-server-net-core/blob/master/trillo_uml.pdf)**._
+_Go to **[Trillo Shop UML diagrams](https://github.com/krzysztoftalar/trillo-shop-server-net-core/blob/master/trillo_uml_v2.pdf)**._
 
 ## Features
 
 - Shopping cart management
 - Creating an order
 - Payment with Stripe
+- Login
 
 ## Built With
 
@@ -41,6 +42,38 @@ _Go to **[Trillo Shop UML diagrams](https://github.com/krzysztoftalar/trillo-sho
 - SQL Server
 
 ### Installation
+
+1. **Create an account on Stripe.**
+2. **In solution WebUI in `appsettings.json` set your Stripe account details, database connection string and client url.**
+
+```JSON
+"Stripe": {
+    "WebHook": "ENTER YOUR ACCOUNT DETAIL",
+    "SecretKey": "ENTER YOUR ACCOUNT DETAIL",
+    "PublicKey": "ENTER YOUR ACCOUNT DETAIL",
+    "Domain": "ENTER YOUR CLIENT URL",
+  }
+```
+
+```JSON
+"Routing": {
+    "Client": "ENTER YOUR CLIENT URL"
+  }
+```
+
+```JSON
+"ConnectionStrings": {
+    "EFTrilloShop": "ENTER YOUR CONNECTION STRING"
+  },
+```
+
+3. **For Stripe webhook testing run the following command in the root of the repository.**
+
+```shell
+stripe listen --forward-to https://localhost:5001/api/payments/webhook
+```
+
+4. **Build and run the solution.**
 
 ## License
 
