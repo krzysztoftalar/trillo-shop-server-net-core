@@ -14,7 +14,7 @@ _This is the server-side of the Trillo Shop application. The project is under co
 
 _Go to **[Trillo Shop Client](https://github.com/krzysztoftalar/trillo-shop-client-react-redux)**._
 
-_Go to **[Trillo Shop UML diagrams](https://github.com/krzysztoftalar/trillo-shop-server-net-core/blob/master/trillo_uml_v2.pdf)**._
+_Go to **[Trillo Shop UML diagrams](https://github.com/krzysztoftalar/trillo-shop-server-net-core/blob/master/trillo_uml.pdf)**._
 
 ## Features
 
